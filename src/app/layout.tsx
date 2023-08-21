@@ -1,8 +1,10 @@
+/** @jsxImportSource @emotion/react */
 import './globals.css'
+import EmotionJsxRegistry from "./registry"
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import { DM_Sans } from 'next/font/google'
+import Header from '@/components/header'
+const inter = DM_Sans({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -12,11 +14,16 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: JSX.Element
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <EmotionJsxRegistry>
+        <body className={inter.className}>
+          <Header />
+          {children}
+        </body>
+        </EmotionJsxRegistry>
     </html>
   )
 }
