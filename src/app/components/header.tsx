@@ -1,8 +1,7 @@
 "use client"
-/** @jsxImportSource @emotion/react */
 import Image from 'next/image'
 import PersonIcon from "@/public/icons/person.svg"
-import styled from '@emotion/styled'
+import styled from 'styled-components'
 import CircleIcon from './Circle'
 
 const ContainerHeader = styled.div`

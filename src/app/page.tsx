@@ -1,8 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import Search from "@/components/search"
 import dynamic from 'next/dynamic'
-
-const DynamicTable = dynamic(()=> import('./table'), {ssr: false})
+import DynamicTable from "./table"
 
 export default function Home() {
     return (

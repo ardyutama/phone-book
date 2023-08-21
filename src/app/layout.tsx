@@ -1,9 +1,9 @@
-/** @jsxImportSource @emotion/react */
+
 import './globals.css'
-import EmotionJsxRegistry from "./registry"
+import StyledComponentRegistry from "./registry"
 import type { Metadata } from 'next'
 import { DM_Sans } from 'next/font/google'
-import Header from '@/components/header'
+import Header from '@/components/Header'
 const inter = DM_Sans({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -18,12 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <EmotionJsxRegistry>
         <body className={inter.className}>
+      <StyledComponentRegistry>
           <Header />
           {children}
+        </StyledComponentRegistry>
         </body>
-        </EmotionJsxRegistry>
     </html>
   )
 }

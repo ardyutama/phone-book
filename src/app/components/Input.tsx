@@ -1,6 +1,5 @@
 'use client'
-/** @jsxImportSource @emotion/react */
-import styled from '@emotion/styled'
+import styled from 'styled-components'
 import { ReactNode } from 'react'
 
 const InputContainerStyle = styled.div`

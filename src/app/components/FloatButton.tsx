@@ -1,8 +1,7 @@
 'use client'
-/** @jsxImportSource @emotion/react */
 import PlusIcon from "@/public/icons/plus.svg"
 import Image from "next/image"
-import styled from '@emotion/styled'
+import styled from 'styled-components'
 
 const Circle = styled.div`
     display: flex;

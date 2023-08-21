@@ -1,6 +1,5 @@
 "use client"
-/** @jsxImportSource @emotion/react */
-import styled from '@emotion/styled'
+import styled from 'styled-components'
 import Image from 'next/image'
 import CircleIcon from './components/Circle'
 import VectorIcon from "./public/icons/vector.svg"

@@ -1,13 +1,11 @@
 'use client'
-/** @jsxImportSource @emotion/react */
-import styled from '@emotion/styled'
-import { css } from '@emotion/react'
+import styled from 'styled-components'
 import Image from 'next/image'
 import { WarningButton, OutlineButton, DangerButton } from '@/components/Button'
 import CircleIcon from "@/components/Circle"
 import VectorIcon from "@/public/icons/vector.svg"
 
-const TextHeading = css`font-size: 24px;
+const TextHeading = styled.p`font-size: 24px;
                 font-style: normal;
                 font-weight: 700;
                 line-height: normal;`
@@ -27,20 +25,31 @@ const CardContainer = styled.div`
     align-self: stretch;
 `
 
+const CardInfoContainer = styled.div`
+    display: flex;
+    padding: 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    align-self: stretch;
+    border-radius: 16px;
+    background: #F5F5F5;
+`
+
 export default function AddPage() {
     return (
-        <div css={css`
-            display: flex;
-            flex-direction: column;
-            align-self: stretch;
-            padding: 24px;
-    `}>
-            <div css={css`
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                align-self: stretch;
-            `}>
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            gap:'24px'
+    }}>
+            <div style={{
+                display: 'flex',
+                alignItems:'center',
+                gap:'16px',
+                alignSelf: 'stretch'
+            }}>
                 <a id="prev" style={{ display: 'flex' }} href='/'>
                     <Image src={VectorIcon} alt='previous' width={12} height={24} />
                 </a>
@@ -53,21 +62,12 @@ export default function AddPage() {
             </div>
             <CardContainer>
                 <CircleIcon />
-                <p css={TextHeading}>Sharron Zimmer</p>
-                <div css={css`
-                    display: flex;
-                    padding: 24px;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    gap: 16px;
-                    align-self: stretch;
-                    border-radius: 16px;
-                    background: #F5F5F5;
-                `}>
-                    <p css={TextHeading}>Contact Info</p>
+                <TextHeading>Sharron Zimmer</TextHeading>
+                <CardInfoContainer>
+                    <TextHeading>Contact Info</TextHeading>
                     <p>020 194 4591</p>
                     <p>020 194 4591</p>
-                </div>
+                </CardInfoContainer>
             </CardContainer>
             <DangerButton style={{alignSelf: 'center'}}>Delete Contact</DangerButton>
         </div>
