@@ -13,3 +13,11 @@
   margin: 0;
   color: var(--black);
 }
+
+.HomeContainer {
+  padding: 0px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 90vh;
+}

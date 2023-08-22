@@ -2,7 +2,7 @@
 import PlusIcon from "@/public/icons/plus.svg"
 import Image from "next/image"
 import styled from 'styled-components'
-
+import Link from "next/link"
 const Circle = styled.div`
     display: flex;
     width: 64px;
@@ -18,10 +18,10 @@ const Circle = styled.div`
 
 export default function FloatingButton() {
     return (
-        <a href="/add" style={{ position: 'absolute', right: '0em', bottom: '0em' }}>
+        <Link href={'/contact/add'} style={{ position: 'absolute', right: '0em', bottom: '0em' }}>
             <Circle>
                 <Image src={PlusIcon} alt="plus" width={48} height={48} />
             </Circle>
-        </a>
+        </Link>
     )
 }

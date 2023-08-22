@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { WarningButton, OutlineButton, DangerButton } from '@/components/Button'
 import CircleIcon from "@/components/Circle"
 import VectorIcon from "@/public/icons/vector.svg"
-
+import Link from 'next/link'
 const TextHeading = styled.p`font-size: 24px;
                 font-style: normal;
                 font-weight: 700;
@@ -37,26 +37,22 @@ const CardInfoContainer = styled.div`
 `
 
 export default function AddPage() {
+
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            gap:'24px'
-    }}>
+        <>
             <div style={{
                 display: 'flex',
-                alignItems:'center',
-                gap:'16px',
+                alignItems: 'center',
+                gap: '16px',
                 alignSelf: 'stretch'
             }}>
-                <a id="prev" style={{ display: 'flex' }} href='/'>
+                <Link id="prev" style={{ display: 'flex' }} href={'/'}>
                     <Image src={VectorIcon} alt='previous' width={12} height={24} />
-                </a>
+                </Link>
                 <HeaderText>
                     Details
                 </HeaderText>
-                <WarningButton href='/edit'>
+                <WarningButton href='/contact/edit'>
                     Edit
                 </WarningButton>
             </div>
@@ -69,7 +65,7 @@ export default function AddPage() {
                     <p>020 194 4591</p>
                 </CardInfoContainer>
             </CardContainer>
-            <DangerButton style={{alignSelf: 'center'}}>Delete Contact</DangerButton>
-        </div>
+            <DangerButton style={{ alignSelf: 'center' }}>Delete Contact</DangerButton>
+        </>
     )
 }

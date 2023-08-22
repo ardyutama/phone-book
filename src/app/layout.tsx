@@ -18,12 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-        <body className={inter.className}>
-      <StyledComponentRegistry>
+      <body className={inter.className}>
+        <StyledComponentRegistry>
           <Header />
           {children}
         </StyledComponentRegistry>
-        </body>
+      </body>
     </html>
   )
 }

@@ -4,6 +4,7 @@ import Image from 'next/image'
 import CircleIcon from './components/Circle'
 import VectorIcon from "./public/icons/vector.svg"
 import FloatingButton from "./components/FloatButton"
+import { useRouter } from 'next/navigation'
 
 const TableContainer = styled.table`
     width: 100%;
@@ -36,28 +37,28 @@ const ContainerPagination = styled.ul`
     }
 `
 
-const TextName = styled.p`
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`
-
-type ContentProps = {
-    name: boolean
-}
-
-const ContainerContent = styled('td') <ContentProps>`
-    display: ${(props: ContentProps) => props.name ? 'flex' : ''};
-    gap: 12px;
-    align-items: center;
-    padding-left: 8px;
+const ContainerContent = styled('td') <{ $name?: Boolean }>` 
+    max-width: 0;
+    .NameContainer {
+        display: ${(props) => props.$name ? 'flex' : ''};
+        gap: 12px;
+        align-items: center;
+        padding-left: 8px;
+        padding: 16px;
+    }
+    p{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 `
 
 export default function Table() {
+    const router = useRouter()
     return (
         <>
-            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', flexGrow:1, position: 'relative'}}>
-            <FloatingButton />
+            <div style={{ height: '100%', display: 'flex', flexDirection: 'column', flexGrow: 1, position: 'relative' }}>
+                <FloatingButton />
                 <TableContainer>
                     <thead>
                         <TableHead>
@@ -69,15 +70,15 @@ export default function Table() {
                         <H3>Favorites</H3>
                     </tr> */}
                     <tbody>
-                        <tr onClick={ (e) => location.href = '/detail'} style={{ cursor:'pointer'}}>
-                            <ContainerContent name={true}>
-                                <CircleIcon />
-                                <div style={{maxWidth: '100px'}}>
-                                <TextName>Ardy Putra Utama</TextName>
+                        <tr onClick={() => router.push('/contact/detail')} style={{ cursor: 'pointer' }}>
+                            <ContainerContent $name>
+                                <div className='NameContainer'>
+                                    <CircleIcon />
+                                    <p>Ardy Putra Utama</p>
                                 </div>
-                            </ContainerContent >
-                            <ContainerContent name={false}>
-                                020 194 4591
+                            </ContainerContent>
+                            <ContainerContent>
+                                <p>020 194 4591</p>
                             </ContainerContent>
                         </tr>
                     </tbody>
