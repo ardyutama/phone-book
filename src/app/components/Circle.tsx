@@ -12,9 +12,9 @@ export const Circle = styled.div`
     background: var(--blue);
     flex-shrink: 0 ;
 `
-export default function CircleIcon({children}:{children?: ReactNode}){
+export default function CircleIcon({className,children}:{className?: string, children?: ReactNode}){
     return (
-        <Circle>
+        <Circle className={className}>
             {children}
         </Circle>
     )

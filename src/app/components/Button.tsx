@@ -29,7 +29,7 @@ export const OutlineButton = styled(Button)`
     color: var(--blue);
     border: 1px solid var(--blue);
 `
-export default function ButtonLink ({className, href, children}: {className: string,href:string, children: React.ReactNode}) {
+export default function ButtonLink({ className, href, children }: {className: string, href: string, children: React.ReactNode }) {
     return (
         <Link className={className} href={href}>
             <Button>{children}</Button>

@@ -8,6 +8,7 @@ import VectorIcon from "@/public/icons/vector.svg";
 import PersonIcon from "@/public/icons/person-2.svg";
 import PhoneIcon from "@/public/icons/phone.svg";
 import Link from "next/link";
+
 const HeaderText = styled.p`
   font-size: 24px;
   font-weight: 700;

@@ -1,11 +1,13 @@
 "use client"
 import styled from 'styled-components'
 import Image from 'next/image'
-import CircleIcon from './components/Circle'
-import VectorIcon from "./public/icons/vector.svg"
-import FloatingButton from "./components/FloatButton"
+import CircleIcon from '@/components/Circle'
+import VectorIcon from "@/public/icons/vector.svg"
+import FloatingButton from "@/components/FloatButton"
 import { useRouter } from 'next/navigation'
-
+import { getClient } from '@/lib/client'
+import { gql } from '@apollo/client'
+import FetchData from './fetchData'
 const TableContainer = styled.table`
     width: 100%;
     height: 100%;
@@ -54,6 +56,7 @@ const ContainerContent = styled('td') <{ $name?: Boolean }>`
 `
 
 export default function Table() {
+    console.log(FetchData)
     const router = useRouter()
     return (
         <>
