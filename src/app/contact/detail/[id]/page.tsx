@@ -6,6 +6,34 @@ import CircleIcon from "@/components/Circle"
 import VectorIcon from "@/public/icons/vector.svg"
 import Link from 'next/link'
 // import { GetContactsData } from '@/lib/contacts'
+import { gql, useSuspenseQuery } from "@apollo/client";
+
+type Phone = {
+    number: number;
+};
+
+type ContactList = {
+    [contact : number]: Contact[]
+};
+type Contact = {
+    contact_by_pk :{
+        id: number;
+    first_name: string;
+    last_name: string;
+    phones: Phone[];
+    }  
+};
+const query = gql`
+query getContactByPKgetContactById($id: Int!){
+    contact_by_pk(id: $id){
+      first_name,
+      last_name,
+      phones{
+        number
+      }
+    }
+  }
+`;
 
 const TextHeading = styled.p`font-size: 24px;
                 font-style: normal;
@@ -39,6 +67,8 @@ const CardInfoContainer = styled.div`
 `
 
 export default function DetailPage({params}: {params: {id: string}}) {
+    const { data } = useSuspenseQuery<Contact>(query, {variables: {id: params.id}})
+    const contact = data.contact_by_pk
     // const data = GetContactsData(parseInt(params.id))
     return (
         <>
@@ -60,11 +90,14 @@ export default function DetailPage({params}: {params: {id: string}}) {
             </div>
             <CardContainer>
                 <CircleIcon />
-                <TextHeading>Sharron Zimmer</TextHeading>
+                <TextHeading>{contact.first_name}</TextHeading>
                 <CardInfoContainer>
                     <TextHeading>Contact Info</TextHeading>
-                    <p>020 194 4591</p>
-                    <p>020 194 4591</p>
+                    {
+                        contact.phones.map((phone,index)=> (
+                            <p key={index}>{phone.number}</p>
+                        ))
+                    }
                 </CardInfoContainer>
             </CardContainer>
             <DangerButton style={{ alignSelf: 'center' }}>Delete Contact</DangerButton>

@@ -1,14 +1,10 @@
 "use client"
 import styled from 'styled-components'
-import Image from 'next/image'
-import CircleIcon from '@/components/Circle'
-import VectorIcon from "@/public/icons/vector.svg"
-import FloatingButton from "@/components/FloatButton"
-import { useRouter } from 'next/navigation'
-
 import { gql, useSuspenseQuery } from "@apollo/client";
-import ContactList from './ContactCard'
-
+import FloatingButton from "@/components/FloatButton"
+import ContactList from '@/components/ContactList'
+import Pagination from '@/components/Pagination';
+import { useState } from 'react';
 type Phone = {
     number: number;
 };
@@ -56,22 +52,14 @@ const TableHeader = styled.th`
     text-align: start;
 `
 
-const ContainerPagination = styled.ul`
-    display: flex;
-    padding: 16px 0px;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    align-self: stretch;
-    border-top: 1px solid #3E3E3E;
-    >li {
-        display: inline;
-    }
-`
-
 export default function Table() {
-    const router = useRouter()
     const { data } = useSuspenseQuery<ContactList>(query)
+    const [currentPage,setCurrentPage] = useState(1);
+    const pageSize = 10
+
+    const onPageChange = (page:number) => {
+        setCurrentPage(page)
+    }
     console.log(data)
     return (
         <>
@@ -97,24 +85,9 @@ export default function Table() {
                     </tbody>
                 </TableContainer>
             </div>
-            <ContainerPagination>
-                <a id="prev">
-                    <Image src={VectorIcon} alt='previous' width={12} height={24} />
-                </a>
-                <a>1</a>
-                <a>2</a>
-                <a>3</a>
-                <a id="prev">
-                    <Image
-                        src={VectorIcon}
-                        alt='previous'
-                        style={{
-                            scale: -1
-                        }}
-                        width={12} height={24}
-                    />
-                </a>
-            </ContainerPagination>
+           <Pagination 
+
+           />
         </>
     )
 }

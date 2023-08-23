@@ -18,7 +18,7 @@ const Circle = styled.div`
 
 export default function FloatingButton() {
     return (
-        <Link href={'/contact/add'} style={{ position: 'absolute', right: '0em', bottom: '0em' }}>
+        <Link href={'/contact/add'} style={{ position: 'absolute', right: '0em', bottom: '0em', zIndex:10 }}>
             <Circle>
                 <Image src={PlusIcon} alt="plus" width={48} height={48} />
             </Circle>
