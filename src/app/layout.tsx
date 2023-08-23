@@ -4,6 +4,7 @@ import StyledComponentRegistry from "./registry"
 import type { Metadata } from 'next'
 import { DM_Sans } from 'next/font/google'
 import Header from '@/components/Header'
+import ApolloWrapper from '@/lib/client'
 const inter = DM_Sans({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -19,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <StyledComponentRegistry>
-          <Header />
-          {children}
-        </StyledComponentRegistry>
+        <ApolloWrapper>
+          <StyledComponentRegistry>
+            <Header />
+            {children}
+          </StyledComponentRegistry>
+        </ApolloWrapper>
       </body>
     </html>
   )

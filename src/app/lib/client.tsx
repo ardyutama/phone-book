@@ -1,15 +1,15 @@
-import { HttpLink } from "@apollo/client";
-import {
-  NextSSRInMemoryCache,
-  NextSSRApolloClient,
-} from "@apollo/experimental-nextjs-app-support/ssr";
-import { registerApolloClient } from "@apollo/experimental-nextjs-app-support/rsc";
+"use client"
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
-export const { getClient } = registerApolloClient(() => {
-  return new NextSSRApolloClient({
-    cache: new NextSSRInMemoryCache(),
-    link: new HttpLink({
-      uri: "https://main--time-pav6zq.apollographos.net/graphql",
-    }),
+const client = new ApolloClient({
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+    cache: new InMemoryCache(),
   });
-});
+
+export default function ApolloWrapper({children}: {children: React.ReactNode}) {
+    return(
+        <ApolloProvider client={client}>
+            {children}
+        </ApolloProvider>
+    )
+}

@@ -5,6 +5,8 @@ import { WarningButton, OutlineButton, DangerButton } from '@/components/Button'
 import CircleIcon from "@/components/Circle"
 import VectorIcon from "@/public/icons/vector.svg"
 import Link from 'next/link'
+// import { GetContactsData } from '@/lib/contacts'
+
 const TextHeading = styled.p`font-size: 24px;
                 font-style: normal;
                 font-weight: 700;
@@ -36,8 +38,8 @@ const CardInfoContainer = styled.div`
     background: #F5F5F5;
 `
 
-export default function AddPage() {
-
+export default function DetailPage({params}: {params: {id: string}}) {
+    // const data = GetContactsData(parseInt(params.id))
     return (
         <>
             <div style={{

@@ -5,9 +5,39 @@ import CircleIcon from '@/components/Circle'
 import VectorIcon from "@/public/icons/vector.svg"
 import FloatingButton from "@/components/FloatButton"
 import { useRouter } from 'next/navigation'
-import { getClient } from '@/lib/client'
-import { gql } from '@apollo/client'
-import FetchData from './fetchData'
+
+import { gql, useSuspenseQuery } from "@apollo/client";
+import ContactList from './ContactCard'
+
+type Phone = {
+    number: number;
+};
+
+type Contact = {
+    id: number;
+    first_name: string;
+    last_name: string;
+    phones: Phone[];
+};
+
+type ContactList = {
+    contact: Contact[]
+};
+
+
+const query = gql`
+      {
+        contact(limit: 10){
+          id,
+          first_name,
+          last_name
+          phones {
+            number
+          }
+        }
+      }
+`;
+
 const TableContainer = styled.table`
     width: 100%;
     height: 100%;
@@ -39,25 +69,10 @@ const ContainerPagination = styled.ul`
     }
 `
 
-const ContainerContent = styled('td') <{ $name?: Boolean }>` 
-    max-width: 0;
-    .NameContainer {
-        display: ${(props) => props.$name ? 'flex' : ''};
-        gap: 12px;
-        align-items: center;
-        padding-left: 8px;
-        padding: 16px;
-    }
-    p{
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-`
-
 export default function Table() {
-    console.log(FetchData)
     const router = useRouter()
+    const { data } = useSuspenseQuery<ContactList>(query)
+    console.log(data)
     return (
         <>
             <div style={{ height: '100%', display: 'flex', flexDirection: 'column', flexGrow: 1, position: 'relative' }}>
@@ -69,25 +84,17 @@ export default function Table() {
                             <TableHeader>Phone Number</TableHeader>
                         </TableHead>
                     </thead>
-                    {/* <tr>
-                        <H3>Favorites</H3>
-                    </tr> */}
                     <tbody>
-                        <tr onClick={() => router.push('/contact/detail')} style={{ cursor: 'pointer' }}>
-                            <ContainerContent $name>
-                                <div className='NameContainer'>
-                                    <CircleIcon />
-                                    <p>Ardy Putra Utama</p>
-                                </div>
-                            </ContainerContent>
-                            <ContainerContent>
-                                <p>020 194 4591</p>
-                            </ContainerContent>
-                        </tr>
+                        {data.contact.map((contact: Contact) => (
+                            <ContactList
+                                key={contact.id}
+                                id={contact.id}
+                                first_name={contact.first_name}
+                                last_name={contact.last_name}
+                                phones={contact.phones}
+                            />
+                        ))}
                     </tbody>
-                    {/* <div>
-                        <H3>All Contacts</H3>
-                    </div> */}
                 </TableContainer>
             </div>
             <ContainerPagination>
