@@ -17,10 +17,10 @@ type ContactList = {
 };
 type Contact = {
     contact_by_pk :{
-        id: number;
+    id: number;
     first_name: string;
     last_name: string;
-    phones: Phone[];
+    phones?: Phone[];
     }  
 };
 const query = gql`
@@ -90,12 +90,12 @@ export default function DetailPage({params}: {params: {id: string}}) {
             </div>
             <CardContainer>
                 <CircleIcon />
-                <TextHeading>{contact.first_name}</TextHeading>
+                <TextHeading>{contact?.first_name}</TextHeading>
                 <CardInfoContainer>
                     <TextHeading>Contact Info</TextHeading>
                     {
-                        contact.phones.map((phone,index)=> (
-                            <p key={index}>{phone.number}</p>
+                        contact?.phones?.map((phone,index)=> (
+                            <p key={index}>{phone?.number}</p>
                         ))
                     }
                 </CardInfoContainer>

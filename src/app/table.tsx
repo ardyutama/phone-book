@@ -4,20 +4,22 @@ import { gql, useSuspenseQuery } from "@apollo/client";
 import FloatingButton from "@/components/FloatButton"
 import ContactList from '@/components/ContactList'
 import Pagination from '@/components/Pagination';
-import { useState } from 'react';
-type Phone = {
+import { useEffect, useState } from 'react';
+
+interface Phone {
     number: number;
 };
 
-type Contact = {
+interface Contact {
     id: number;
-    first_name: string;
-    last_name: string;
+    first_name?: string;
+    last_name?: string;
     phones: Phone[];
+    favorite: boolean;
 };
 
-type ContactList = {
-    contact: Contact[]
+interface ContactList {
+    contact: Contact[];
 };
 
 
@@ -53,14 +55,49 @@ const TableHeader = styled.th`
 `
 
 export default function Table() {
-    const { data } = useSuspenseQuery<ContactList>(query)
-    const [currentPage,setCurrentPage] = useState(1);
+    const { data, refetch } = useSuspenseQuery<ContactList>(query)
+    const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10
+    const [contacts, setContacts] = useState<Contact[]>([])
+    const [toggledFavorites, setToggledFavorites] = useState<number[]>([]);
 
-    const onPageChange = (page:number) => {
+    useEffect(() => {
+        if (data) {
+            const favoriteIdsFromStorage = JSON.parse(localStorage.getItem('favoriteContacts') || '[]');
+            const updatedContacts = data.contact.map(contact => ({
+                ...contact,
+                favorite: favoriteIdsFromStorage.filter((c_contact: Contact) => {
+                    if (c_contact.id === contact.id) {
+                        return c_contact.favorite;
+                    }
+                }).length == 1,
+            }));
+            setContacts(updatedContacts);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        const favoriteContacts: Contact[] = contacts.filter(contact => contact.favorite);
+        localStorage.setItem('favoriteContacts', JSON.stringify(favoriteContacts));
+    }, [contacts])
+
+    const toggleFavorite = (event: React.MouseEvent<HTMLButtonElement>, contactId: number) => {
+        event.stopPropagation()
+        setContacts(
+            contacts.map(
+                contact => contact.id === contactId ? { ...contact, favorite: !contact.favorite } : contact
+            ))
+    }
+
+    const onPageChange = (page: number) => {
         setCurrentPage(page)
     }
-    console.log(data)
+
+    const sortedContacts = [...contacts].sort(
+        (a, b) => b.favorite ? 1 : -1
+    );
+
+
     return (
         <>
             <div style={{ height: '100%', display: 'flex', flexDirection: 'column', flexGrow: 1, position: 'relative' }}>
@@ -70,24 +107,20 @@ export default function Table() {
                         <TableHead>
                             <TableHeader>Name</TableHeader>
                             <TableHeader>Phone Number</TableHeader>
+                            <TableHeader>Favorite</TableHeader>
                         </TableHead>
                     </thead>
                     <tbody>
-                        {data.contact.map((contact: Contact) => (
-                            <ContactList
-                                key={contact.id}
-                                id={contact.id}
-                                first_name={contact.first_name}
-                                last_name={contact.last_name}
-                                phones={contact.phones}
-                            />
-                        ))}
+                        <ContactList
+                            contacts={sortedContacts}
+                            isFavorite={toggleFavorite}
+                        />
                     </tbody>
                 </TableContainer>
             </div>
-           <Pagination 
+            <Pagination
 
-           />
+            />
         </>
     )
 }
