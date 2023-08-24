@@ -90,7 +90,7 @@ export default function DetailPage({params}: {params: {id: string}}) {
             </div>
             <CardContainer>
                 <CircleIcon />
-                <TextHeading>{contact?.first_name}</TextHeading>
+                <TextHeading>{contact.first_name} {contact.last_name}</TextHeading>
                 <CardInfoContainer>
                     <TextHeading>Contact Info</TextHeading>
                     {

@@ -25,7 +25,7 @@ interface ContactList {
 
 const query = gql`
       {
-        contact(limit: 10){
+        contact{
           id,
           first_name,
           last_name
@@ -59,7 +59,6 @@ export default function Table() {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10
     const [contacts, setContacts] = useState<Contact[]>([])
-    const [toggledFavorites, setToggledFavorites] = useState<number[]>([]);
 
     useEffect(() => {
         if (data) {

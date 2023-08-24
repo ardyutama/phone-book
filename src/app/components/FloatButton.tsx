@@ -14,6 +14,11 @@ const Circle = styled.div`
     background: white;
     flex-shrink: 0;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+
+    @media (min-width: 420px) {
+        display: none;
+    }
+
 `
 
 export default function FloatingButton() {

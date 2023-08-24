@@ -10,7 +10,7 @@ const InputContainerStyle = styled.div`
     align-self: stretch;
     border-radius: 8px;
     background: #F5F5F5;
-
+    flex: 1 0 0;
     input{
         all: unset;
     }
