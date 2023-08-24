@@ -3,6 +3,10 @@ import { useRouter } from 'next/navigation'
 import styled from 'styled-components'
 import CircleIcon from '@/components/Circle'
 import { useState } from 'react'
+import { gql, useMutation } from "@apollo/client";
+
+
+
 const ContainerContent = styled('td') <{ $name?: Boolean }>` 
     max-width: 0;
     .NameContainer {
@@ -19,7 +23,7 @@ const ContainerContent = styled('td') <{ $name?: Boolean }>`
     }
 `
 
-type Phone = {
+interface Phone {
     number: number;
 };
 
@@ -34,26 +38,13 @@ interface Contact {
 interface ContactListProps {
     contacts: Contact[];
     isFavorite: (event: React.MouseEvent<HTMLButtonElement>,contactId: number) => void;
+    deleteItem:(event: React.MouseEvent<HTMLButtonElement>,contactId: number) => void
 }
 
-
-// const saveToLocalStorage = (event: React.MouseEvent<HTMLButtonElement>, id: number) => {
-//     event.stopPropagation()
-//     let tempFavoriteContact: string[] = [];
-//     const storeFavoriteContact = localStorage.getItem('favoriteContacts')
-//     if (storeFavoriteContact !== null) {
-//         tempFavoriteContact = JSON.parse(storeFavoriteContact)
-//     }
-//     tempFavoriteContact.push(id.toString())
-//     let checkDuplicates = tempFavoriteContact.filter(function (item, index) {
-//         return tempFavoriteContact.indexOf(item) == index;
-//     })
-//     localStorage.setItem('favoriteContacts', JSON.stringify(checkDuplicates))
-// }
-
-const ContactList: React.FC<ContactListProps> = ({ contacts, isFavorite }: ContactListProps) => {
+const ContactList = ({ contacts, isFavorite, deleteItem }: ContactListProps) => {
     const favoriteContacts = contacts.filter(contact => contact.favorite);
     const regularContacts = contacts.filter(contact => !contact.favorite);
+
     const router = useRouter()
     return (
         <>
@@ -70,7 +61,7 @@ const ContactList: React.FC<ContactListProps> = ({ contacts, isFavorite }: Conta
                     </ContainerContent>
                     <td>
                         <button onClick={(event) => isFavorite(event,contact.id)} style={{ cursor: 'pointer' }}>{contact.favorite ? 'Unfavorite' : 'Favorite'}</button>
-                        <button>delete</button>
+                        <button onClick={(event) => deleteItem(event,contact.id)}>delete</button>
                     </td>
                 </tr>
             )}
@@ -87,7 +78,7 @@ const ContactList: React.FC<ContactListProps> = ({ contacts, isFavorite }: Conta
                     </ContainerContent>
                     <td>
                         <button onClick={(event) => isFavorite(event,contact.id)} style={{ cursor: 'pointer' }}>{contact.favorite ? 'Unfavorite' : 'Favorite'}</button>
-                        <button>delete</button>
+                        <button onClick={(event) => deleteItem(event,contact.id)}>delete</button>
                     </td>
                 </tr>
             )}

@@ -22,8 +22,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <ApolloWrapper>
           <StyledComponentRegistry>
-            <Header />
-            {children}
+              <Header />
+              {children}
           </StyledComponentRegistry>
         </ApolloWrapper>
       </body>

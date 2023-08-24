@@ -8,30 +8,31 @@ import VectorIcon from "@/public/icons/vector.svg";
 import PersonIcon from "@/public/icons/person-2.svg";
 import PhoneIcon from "@/public/icons/phone.svg";
 import Link from "next/link";
+import { gql, useSuspenseQuery } from "@apollo/client";
 import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
-import { useRouter } from "next/navigation";
+
+interface Phone {
+  number: number;
+};
+
+interface Contact {
+  id: number;
+  first_name: string;
+  last_name: string;
+  phones?: Phone[];
+}
+interface ContactByPk {
+  contact_by_pk: Contact
+};
 
 const query = gql`
-  mutation AddContactWithPhones(
-    $first_name: String!
-    $last_name: String!
-    $phones: [phone_insert_input!]!
-  ) {
-    insert_contact(
-      objects: {
-        first_name: $first_name
-        last_name: $last_name
-        phones: { data: $phones }
-      }
-    ) {
-      returning {
-        first_name
-        last_name
-        id
-        phones {
-          number
-        }
+query getContactByPKgetContactById($id: Int!){
+    contact_by_pk(id: $id){
+      id,
+      first_name,
+      last_name,
+      phones{
+        number
       }
     }
   }
@@ -79,31 +80,14 @@ const NavContainer = styled.div`
   align-self: stretch;
 `;
 
-export default function AddPage() {
+
+
+export default function AddPage({ params }: { params: { id: string } }) {
+  const { data } = useSuspenseQuery<ContactByPk>(query, { variables: { id: params.id } })
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [inputFields, setInputFields] = useState([{ id: 0, value: "" }]);
-  const [addContact, { loading, error }] = useMutation(query);
-  const router = useRouter();
-  const handleAddContact = async () => {
-    try {
-      const phonesData = inputFields.map((field) => ({ number: field.value }));
-      const result = await addContact({
-        variables: {
-          first_name: firstName,
-          last_name: lastName,
-          phones: phonesData,
-        },
-      });
-      setInputFields([{ id: 0, value: "" }]);
-      setFirstName("");
-      setLastName("");
-      router.push("/");
-      console.log(result.data.insert_contact.returning);
-    } catch (e) {
-      console.error("Error adding Contact", e);
-    }
-  };
+
   const handleAddField = () => {
     const newInputFields = [
       ...inputFields,
@@ -119,6 +103,8 @@ export default function AddPage() {
     console.log(updatedInputFields);
     setInputFields(updatedInputFields);
   };
+
+  const contact: Contact = data.contact_by_pk
   return (
     <>
       <NavContainer>
@@ -126,7 +112,7 @@ export default function AddPage() {
           <Image src={VectorIcon} alt="previous" width={12} height={24} />
         </Link>
         <HeaderText>New Contact</HeaderText>
-        <PrimaryButton onClick={handleAddContact}>Save</PrimaryButton>
+        <PrimaryButton>Save</PrimaryButton>
       </NavContainer>
       <CardContainer>
         <CircleIcon />
@@ -137,7 +123,7 @@ export default function AddPage() {
               <input
                 type="text"
                 placeholder="First Name"
-                value={firstName}
+                value={contact.first_name}
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </InputContainer>
@@ -145,7 +131,7 @@ export default function AddPage() {
               <input
                 type="text"
                 placeholder="Last Name"
-                value={lastName}
+                value={contact.last_name}
                 onChange={(e) => setLastName(e.target.value)}
               />
             </InputContainer>
@@ -154,6 +140,30 @@ export default function AddPage() {
         <NameContainer>
           <Image src={PhoneIcon} alt="Person" width={24} height={24} />
           <FormContainer>
+            {contact.phones ?
+              contact.phones?.map((phone) => (
+                <InputContainer key={contact.id}>
+                  <input
+                    type="text"
+                    placeholder="+62xxxx"
+                    value={phone.number}
+                    onChange={(e) => handleInputChange(contact.id, e.target.value)}
+                  />
+                </InputContainer>
+              )) :
+              inputFields.map((input) => (
+                <InputContainer key={input.id}>
+                  <input
+                    type="text"
+                    placeholder="+62xxxx"
+                    value={input.value}
+                    onChange={(e) => handleInputChange(contact.id, e.target.value)}
+                  />
+                </InputContainer>
+              ))
+
+            }
+
             {inputFields.map((field) => (
               <InputContainer key={field.id}>
                 <input
