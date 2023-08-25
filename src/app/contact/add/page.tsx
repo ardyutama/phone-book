@@ -4,13 +4,11 @@ import Image from "next/image";
 import { PrimaryButton, OutlineButton } from "@/components/Button";
 import InputContainer from "@/components/Input";
 import CircleIcon from "@/components/Circle";
-import VectorIcon from "@/public/icons/vector.svg";
-import PersonIcon from "@/public/icons/person-2.svg";
-import PhoneIcon from "@/public/icons/phone.svg";
+import Icon from "@/public/icons";
 import Link from "next/link";
 import { useState } from "react";
 import { ADD_CONTACT } from "@/lib/apolloQuery";
-import { gql, useMutation } from "@apollo/client";
+import {  useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
 
 const HeaderText = styled.p`
@@ -99,7 +97,7 @@ export default function AddPage() {
     <>
       <NavContainer>
         <Link id="prev" style={{ display: "inline-flex" }} href="/">
-          <Image src={VectorIcon} alt="previous" width={12} height={24} />
+          <Image src={Icon.ArrowIcon} alt="previous" width={12} height={24} />
         </Link>
         <HeaderText>New Contact</HeaderText>
         <PrimaryButton onClick={handleAddContact}>Save</PrimaryButton>
@@ -107,7 +105,7 @@ export default function AddPage() {
       <CardContainer>
         <CircleIcon />
         <NameContainer>
-          <Image src={PersonIcon} alt="Person" width={24} height={24} />
+          <Image src={Icon.PersonIcon} alt="Person" width={24} height={24} />
           <FormContainer>
             <InputContainer>
               <input
@@ -128,7 +126,7 @@ export default function AddPage() {
           </FormContainer>
         </NameContainer>
         <NameContainer>
-          <Image src={PhoneIcon} alt="Person" width={24} height={24} />
+          <Image src={Icon.PhoneIcon} alt="Person" width={24} height={24} />
           <FormContainer>
             {inputFields.map((field) => (
               <InputContainer key={field.id}>

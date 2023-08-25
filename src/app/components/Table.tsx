@@ -6,11 +6,9 @@ import ContactList from '@/components/ContactList'
 import { useEffect, useState } from 'react';
 import Image from 'next/image'
 import { GET_ALL_CONTACT, DELETE_CONTACT_BY_PK } from '@/lib/apolloQuery';
-import VectorIcon from "@/public/icons/vector.svg"
+import Icon from "@/public/icons"
 import InputContainer from '@/components/Input'
-import SearchIcon from "@/public/icons/search.svg"
 import { PrimaryButton } from '@/components/Button';
-
 interface Phone {
     number: string;
 };
@@ -45,6 +43,10 @@ const TableHeader = styled.th`
     text-align: start;
 `
 const ContainerPagination = styled.ul`
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    background: white;
     display: flex;
     padding: 16px 0px;
     justify-content: center;
@@ -67,6 +69,7 @@ export default function Table() {
     const [filteredList, setFilteredList] = useState<Contact[]>([])
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
+    const totalPages = Math.ceil(contacts.length / ITEMS_PER_PAGE)
 
     //Condition if there's any seach query then use the filtered list if not then normal sort
     const sortedContacts = searchQuery ?
@@ -128,6 +131,7 @@ export default function Table() {
         setCurrentPage(prevPage => Math.max(prevPage + 1, 1));
         refetch()
     }
+
     const searchContact = (query: string) => {
         query = query.toLowerCase()
         setSearchQuery(query)
@@ -151,13 +155,12 @@ export default function Table() {
         <>
             <div className="SearchContainer">
                 <InputContainer>
-                    <Image src={SearchIcon} alt='Search' />
+                    <Image src={Icon.SearchIcon} alt='Search' />
                     <input type='text' placeholder='Cari Kontak...' onChange={(event) => searchContact(event.target.value)} value={searchQuery} />
                 </InputContainer>
                 <PrimaryButton className="AddButton" href="/contact/add">Add Contact</PrimaryButton>
             </div>
             <div style={{ height: '100%', display: 'flex', flexDirection: 'column', flexGrow: 1, position: 'relative' }}>
-                <FloatingButton />
                 <TableContainer>
                     <thead>
                         <TableHead>
@@ -175,19 +178,20 @@ export default function Table() {
                     </tbody>
                 </TableContainer>
             </div>
+            <FloatingButton />
             <ContainerPagination>
                 <button
                     onClick={() => { handlePreviousPage() }}
                     disabled={currentPage === 1}
                 >
-                    <Image src={VectorIcon} alt='previous' width={12} height={24} />
+                    <Image src={Icon.ArrowIcon} alt='previous' width={12} height={24} />
                 </button>
                 <button
                     onClick={() => { handleNextPage() }}
-                    disabled={contacts.length < ITEMS_PER_PAGE}
+                    disabled={currentPage === totalPages}
                 >
                     <Image
-                        src={VectorIcon}
+                        src={Icon.ArrowIcon}
                         alt='previous'
                         style={{
                             scale: -1

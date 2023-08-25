@@ -1,5 +1,5 @@
 'use client'
-import PlusIcon from "@/public/icons/plus.svg"
+import Icon from "@/public/icons"
 import Image from "next/image"
 import styled from 'styled-components'
 import Link from "next/link"
@@ -23,9 +23,9 @@ const Circle = styled.div`
 
 export default function FloatingButton() {
     return (
-        <Link href={'/contact/add'} style={{ position: 'absolute', right: '0em', bottom: '0em', zIndex:10 }}>
+        <Link href={'/contact/add'} style={{ position: 'sticky', left: '0px', bottom: '5em', zIndex:10, width:'100%', display: "flex", justifyContent: 'flex-end' }}>
             <Circle>
-                <Image src={PlusIcon} alt="plus" width={48} height={48} />
+                <Image src={Icon.PlusIcon} alt="plus" width={48} height={48} />
             </Circle>
         </Link>
     )

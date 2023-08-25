@@ -1,19 +1,18 @@
 "use client";
 import styled from "styled-components";
 import Image from "next/image";
-import { PrimaryButton, OutlineButton } from "@/components/Button";
+import { PrimaryButton } from "@/components/Button";
 import InputContainer from "@/components/Input";
 import CircleIcon from "@/components/Circle";
-import VectorIcon from "@/public/icons/vector.svg";
-import PersonIcon from "@/public/icons/person-2.svg";
-import PhoneIcon from "@/public/icons/phone.svg";
-import Link from "next/link";
-import { gql, useSuspenseQuery } from "@apollo/client";
-import { useState } from "react";
+import Icon from "@/public/icons";
+import { EDIT_CONTACT_BY_PK, EDIT_PHONES_BY_PK, GET_CONTACT_BY_PK } from "@/lib/apolloQuery";
+import { useMutation, useSuspenseQuery } from "@apollo/client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface Phone {
-  number: number;
-};
+  number: string;
+}
 
 interface Contact {
   id: number;
@@ -22,21 +21,8 @@ interface Contact {
   phones?: Phone[];
 }
 interface ContactByPk {
-  contact_by_pk: Contact
-};
-
-const query = gql`
-query getContactByPKgetContactById($id: Int!){
-    contact_by_pk(id: $id){
-      id,
-      first_name,
-      last_name,
-      phones{
-        number
-      }
-    }
-  }
-`;
+  contact_by_pk: Contact;
+}
 
 const HeaderText = styled.p`
   font-size: 24px;
@@ -80,50 +66,103 @@ const NavContainer = styled.div`
   align-self: stretch;
 `;
 
-
-
-export default function AddPage({ params }: { params: { id: string } }) {
-  const { data } = useSuspenseQuery<ContactByPk>(query, { variables: { id: params.id } })
+export default function EditPage({ params }: { params: { id: string } }) {
+  const { data } = useSuspenseQuery<ContactByPk>(GET_CONTACT_BY_PK, {
+    variables: { id: params.id },
+  });
+  const contact: Contact = data.contact_by_pk;
+  const [editContact] = useMutation(EDIT_CONTACT_BY_PK);
+  const [editPhone] = useMutation(EDIT_PHONES_BY_PK);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [inputFields, setInputFields] = useState([{ id: 0, value: "" }]);
+  const [inputFields, setInputFields] = useState<{id: number, number: string}[]>()
+  const oldPhoneNumbers = contact.phones?.map(phone => phone.number) || []
+  const router = useRouter()
 
-  const handleAddField = () => {
-    const newInputFields = [
-      ...inputFields,
-      { id: inputFields.length, value: "" },
-    ];
-
-    setInputFields(newInputFields);
-  };
+  useEffect(()=> {
+    if(data){
+      setFirstName(contact.first_name)
+      setLastName(contact.last_name)
+      setInputFields(
+        contact.phones ? contact.phones.map((phone, index) => ({ id: index, number: phone.number }))
+          : [{ id: 0, number: "" }]);
+    }
+  }, [data])
+    
   const handleInputChange = (id: number, value: string) => {
-    const updatedInputFields = inputFields.map((field) =>
-      field.id == id ? { ...field, value } : field
+    const updatedInputFields = inputFields?.map((field) =>
+      field.id == id ? { ...field, number: value } : field
     );
     console.log(updatedInputFields);
     setInputFields(updatedInputFields);
   };
 
-  const contact: Contact = data.contact_by_pk
+  const handleSave = async () => {
+    try {
+      for (let i = 0; i < inputFields?.length!; i++) {
+        const phone = inputFields![i];
+        const oldPhoneNumber = oldPhoneNumbers[i];
+
+        if (phone.number !== oldPhoneNumber) {
+          await editPhone({
+            variables: {
+              pk_columns: {
+                number: oldPhoneNumber,
+                contact_id: contact.id,
+              },
+              new_phone_number: phone.number,
+            },
+          });
+        }
+      }
+      console.log('Phone numbers saved successfully.');
+      
+    } catch (error) {
+      console.error('Error saving phone numbers', error);
+    }
+  }
+
+  const handleUpdateContact = async () => {
+    try {
+      await editContact({
+        variables: {
+          id: contact.id,
+          _set: {
+            first_name: firstName,
+            last_name: lastName,
+          }
+        },
+      });
+      handleSave()
+      console.log('Contact updated successfully');
+      router.push('/')
+    } catch (e) {
+      console.error("Error update Contact", e);
+    }
+  };
+
+
   return (
     <>
       <NavContainer>
-        <Link id="prev" style={{ display: "inline-flex" }} href="/">
-          <Image src={VectorIcon} alt="previous" width={12} height={24} />
-        </Link>
-        <HeaderText>New Contact</HeaderText>
-        <PrimaryButton>Save</PrimaryButton>
+        <a id="prev" style={{ display: "inline-flex" }} onClick={()=> router.back()}>
+          <Image src={Icon.ArrowIcon} alt="previous" width={12} height={24} />
+        </a>
+        <HeaderText>Edit Contact</HeaderText>
+        <PrimaryButton onClick={() => {
+          handleUpdateContact()
+        }}>Save</PrimaryButton>
       </NavContainer>
       <CardContainer>
         <CircleIcon />
         <NameContainer>
-          <Image src={PersonIcon} alt="Person" width={24} height={24} />
+          <Image src={Icon.PersonIcon} alt="Person" width={24} height={24} />
           <FormContainer>
             <InputContainer>
               <input
                 type="text"
                 placeholder="First Name"
-                value={contact.first_name}
+                value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </InputContainer>
@@ -131,55 +170,27 @@ export default function AddPage({ params }: { params: { id: string } }) {
               <input
                 type="text"
                 placeholder="Last Name"
-                value={contact.last_name}
+                value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
               />
             </InputContainer>
           </FormContainer>
         </NameContainer>
         <NameContainer>
-          <Image src={PhoneIcon} alt="Person" width={24} height={24} />
+          <Image src={Icon.PhoneIcon} alt="Person" width={24} height={24} />
           <FormContainer>
-            {contact.phones ?
-              contact.phones?.map((phone) => (
-                <InputContainer key={contact.id}>
-                  <input
-                    type="text"
-                    placeholder="+62xxxx"
-                    value={phone.number}
-                    onChange={(e) => handleInputChange(contact.id, e.target.value)}
-                  />
-                </InputContainer>
-              )) :
-              inputFields.map((input) => (
-                <InputContainer key={input.id}>
-                  <input
-                    type="text"
-                    placeholder="+62xxxx"
-                    value={input.value}
-                    onChange={(e) => handleInputChange(contact.id, e.target.value)}
-                  />
-                </InputContainer>
-              ))
-
-            }
-
-            {inputFields.map((field) => (
-              <InputContainer key={field.id}>
+            {inputFields?.map((input) => (
+              <InputContainer key={input.id}>
                 <input
                   type="text"
                   placeholder="+62xxxx"
-                  value={field.value}
-                  onChange={(e) => handleInputChange(field.id, e.target.value)}
+                  value={input.number}
+                  onChange={(e) =>
+                    handleInputChange(input.id, e.target.value)
+                  }
                 />
               </InputContainer>
             ))}
-            <OutlineButton
-              style={{ alignSelf: "flex-end" }}
-              onClick={handleAddField}
-            >
-              Add More{" "}
-            </OutlineButton>
           </FormContainer>
         </NameContainer>
       </CardContainer>

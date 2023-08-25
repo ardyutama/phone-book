@@ -1,16 +1,17 @@
 'use client'
 import styled from 'styled-components'
 import Image from 'next/image'
-import { WarningButton, OutlineButton, DangerButton } from '@/components/Button'
+import { WarningButton, DangerButton } from '@/components/Button'
 import CircleIcon from "@/components/Circle"
-import VectorIcon from "@/public/icons/vector.svg"
+import Icon from '@/public/icons'
 import Link from 'next/link'
 import { GET_CONTACT_BY_PK, DELETE_CONTACT_BY_PK } from '@/lib/apolloQuery'
 import { useMutation, useSuspenseQuery } from "@apollo/client";
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 interface Phone {
-    number: number;
+    number: string;
 };
 
 interface Contact {
@@ -57,8 +58,24 @@ const CardInfoContainer = styled.div`
 export default function DetailPage({ params }: { params: { id: string } }) {
     const { data } = useSuspenseQuery<ContactByPk>(GET_CONTACT_BY_PK, { variables: { id: params.id } })
     const contact: Contact = data.contact_by_pk
-    const [deleteContact, { loading, error }] = useMutation(DELETE_CONTACT_BY_PK);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [phoneNumbers, setPhoneNumbers] = useState<string[]>()
+    const [deleteContact] = useMutation(DELETE_CONTACT_BY_PK);
     const router = useRouter()
+    // console.log(contact.phones?.map((phone)=> {
+    //     console.log(phone.number)
+    // }))
+    // console.log(contact.phones?.map((phone)=> console.log(phone.number)))
+    useEffect(() => {
+        if (data) {
+            setFirstName(contact.first_name)
+            setLastName(contact.last_name)
+            setPhoneNumbers(contact.phones?.map((phone) => phone.number));
+        }
+        console.log(phoneNumbers)
+    }, [data])
+
     const handleDeleteContact = async (contactId: number) => {
         try {
             const result = await deleteContact({ variables: { id: contactId } })
@@ -67,6 +84,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             console.error(error)
         }
     }
+    console.log(data)
     return (
         <>
             <div style={{
@@ -75,9 +93,9 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                 gap: '16px',
                 alignSelf: 'stretch'
             }}>
-                <Link id="prev" style={{ display: 'flex' }} href={'/'} >
-                    <Image src={VectorIcon} alt='previous' width={12} height={24} />
-                </Link>
+                <a id="prev" style={{ display: 'flex' }} onClick={() => router.back()}>
+                    <Image src={Icon.ArrowIcon} alt='previous' width={12} height={24} />
+                </a>
                 <HeaderText>
                     Details
                 </HeaderText>
@@ -87,12 +105,12 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             </div>
             <CardContainer>
                 <CircleIcon />
-                <TextHeading>{contact.first_name} {contact.last_name}</TextHeading>
+                <TextHeading>{firstName} {lastName}</TextHeading>
                 <CardInfoContainer>
                     <TextHeading>Contact Info</TextHeading>
                     {
-                        contact.phones?.map((phone, index) => (
-                            <p key={index}>{phone?.number}</p>
+                        phoneNumbers?.map((phone, index) => (
+                            <p key={index}>{phone}</p>
                         ))
                     }
                 </CardInfoContainer>
