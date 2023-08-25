@@ -62,17 +62,13 @@ export default function DetailPage({ params }: { params: { id: string } }) {
     const [phoneNumbers, setPhoneNumbers] = useState<string[]>()
     const [deleteContact] = useMutation(DELETE_CONTACT_BY_PK);
     const router = useRouter()
-    // console.log(contact.phones?.map((phone)=> {
-    //     console.log(phone.number)
-    // }))
-    // console.log(contact.phones?.map((phone)=> console.log(phone.number)))
+
     useEffect(() => {
         if (data) {
             setFirstName(contact.first_name)
             setLastName(contact.last_name)
             setPhoneNumbers(contact.phones?.map((phone) => phone.number));
         }
-        console.log(phoneNumbers)
     }, [data])
 
     const handleDeleteContact = async (contactId: number) => {
@@ -83,7 +79,6 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             console.error(error)
         }
     }
-    console.log(data)
     return (
         <>
             <div style={{

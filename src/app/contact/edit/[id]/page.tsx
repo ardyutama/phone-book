@@ -93,7 +93,6 @@ export default function EditPage({ params }: { params: { id: string } }) {
     const updatedInputFields = inputFields?.map((field) =>
       field.id == id ? { ...field, number: value } : field
     );
-    console.log(updatedInputFields);
     setInputFields(updatedInputFields);
   };
 
@@ -115,8 +114,6 @@ export default function EditPage({ params }: { params: { id: string } }) {
           });
         }
       }
-      console.log('Phone numbers saved successfully.');
-      
     } catch (error) {
       console.error('Error saving phone numbers', error);
     }
@@ -134,7 +131,6 @@ export default function EditPage({ params }: { params: { id: string } }) {
         },
       });
       handleSave()
-      console.log('Contact updated successfully');
       router.push('/')
     } catch (e) {
       console.error("Error update Contact", e);
