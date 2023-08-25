@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { WarningButton, DangerButton } from '@/components/Button'
 import CircleIcon from "@/components/Circle"
 import Icon from '@/public/icons'
-import Link from 'next/link'
 import { GET_CONTACT_BY_PK, DELETE_CONTACT_BY_PK } from '@/lib/apolloQuery'
 import { useMutation, useSuspenseQuery } from "@apollo/client";
 import { useRouter } from 'next/navigation'
