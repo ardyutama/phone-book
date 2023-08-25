@@ -3,7 +3,7 @@ import './globals.css'
 import StyledComponentRegistry from "./registry"
 import type { Metadata } from 'next'
 import { DM_Sans } from 'next/font/google'
-import Header from '@/components/Header'
+import Header from '@/components/header'
 import ApolloWrapper from '@/lib/client'
 const inter = DM_Sans({ subsets: ['latin'] })
 
