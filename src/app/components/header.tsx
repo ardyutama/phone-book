@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image'
-import Icon from '@/public/icons'
+import Icon from "@/public/icons"
 import styled from 'styled-components'
 import CircleIcon from './Circle'
 
