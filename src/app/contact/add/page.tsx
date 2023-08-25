@@ -9,33 +9,9 @@ import PersonIcon from "@/public/icons/person-2.svg";
 import PhoneIcon from "@/public/icons/phone.svg";
 import Link from "next/link";
 import { useState } from "react";
+import { ADD_CONTACT } from "@/lib/apolloQuery";
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
-
-const query = gql`
-  mutation AddContactWithPhones(
-    $first_name: String!
-    $last_name: String!
-    $phones: [phone_insert_input!]!
-  ) {
-    insert_contact(
-      objects: {
-        first_name: $first_name
-        last_name: $last_name
-        phones: { data: $phones }
-      }
-    ) {
-      returning {
-        first_name
-        last_name
-        id
-        phones {
-          number
-        }
-      }
-    }
-  }
-`;
 
 const HeaderText = styled.p`
   font-size: 24px;
@@ -83,7 +59,7 @@ export default function AddPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [inputFields, setInputFields] = useState([{ id: 0, value: "" }]);
-  const [addContact, { loading, error }] = useMutation(query);
+  const [addContact, { loading, error }] = useMutation(ADD_CONTACT);
   const router = useRouter();
   const handleAddContact = async () => {
     try {

@@ -2,10 +2,6 @@
 import { useRouter } from 'next/navigation'
 import styled from 'styled-components'
 import CircleIcon from '@/components/Circle'
-import { useState } from 'react'
-import { gql, useMutation } from "@apollo/client";
-
-
 
 const ContainerContent = styled('td') <{ $name?: Boolean }>` 
     max-width: 0;
@@ -24,7 +20,7 @@ const ContainerContent = styled('td') <{ $name?: Boolean }>`
 `
 
 interface Phone {
-    number: number;
+    number: string;
 };
 
 interface Contact {
@@ -74,7 +70,7 @@ const ContactList = ({ contacts, isFavorite, deleteItem }: ContactListProps) => 
                         </div>
                     </ContainerContent>
                     <ContainerContent>
-                        <p>{contact.phones[0].number}</p>
+                        <p>{contact.phones[0]?.number}</p>
                     </ContainerContent>
                     <td>
                         <button onClick={(event) => isFavorite(event,contact.id)} style={{ cursor: 'pointer' }}>{contact.favorite ? 'Unfavorite' : 'Favorite'}</button>

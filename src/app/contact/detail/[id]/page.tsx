@@ -5,9 +5,8 @@ import { WarningButton, OutlineButton, DangerButton } from '@/components/Button'
 import CircleIcon from "@/components/Circle"
 import VectorIcon from "@/public/icons/vector.svg"
 import Link from 'next/link'
-// import { GetContactsData } from '@/lib/contacts'
-import { gql, useMutation, useSuspenseQuery } from "@apollo/client";
-import { useEffect } from 'react'
+import { GET_CONTACT_BY_PK, DELETE_CONTACT_BY_PK } from '@/lib/apolloQuery'
+import { useMutation, useSuspenseQuery } from "@apollo/client";
 import { useRouter } from 'next/navigation'
 
 interface Phone {
@@ -23,29 +22,6 @@ interface Contact {
 interface ContactByPk {
     contact_by_pk: Contact
 };
-
-const query = gql`
-query getContactByPKgetContactById($id: Int!){
-    contact_by_pk(id: $id){
-      id,
-      first_name,
-      last_name,
-      phones{
-        number
-      }
-    }
-  }
-`;
-
-const deleteQuery = gql`
-mutation MyMutation($id: Int!) {
-    delete_contact_by_pk(id: $id) {
-      first_name
-      last_name
-      id
-    }
-  }
-`;
 
 const TextHeading = styled.p`font-size: 24px;
                 font-style: normal;
@@ -79,20 +55,18 @@ const CardInfoContainer = styled.div`
 `
 
 export default function DetailPage({ params }: { params: { id: string } }) {
-    const { data } = useSuspenseQuery<ContactByPk>(query, { variables: { id: params.id } })
+    const { data } = useSuspenseQuery<ContactByPk>(GET_CONTACT_BY_PK, { variables: { id: params.id } })
     const contact: Contact = data.contact_by_pk
-    const [deleteContact, { loading, error }] = useMutation(deleteQuery);
+    const [deleteContact, { loading, error }] = useMutation(DELETE_CONTACT_BY_PK);
     const router = useRouter()
     const handleDeleteContact = async (contactId: number) => {
         try {
-            const result = await deleteContact({variables: {id: contactId}})
+            const result = await deleteContact({ variables: { id: contactId } })
             router.push('/')
         } catch (error) {
             console.error(error)
         }
     }
-    console.log(contact)
-    // const data = GetContactsData(parseInt(params.id))
     return (
         <>
             <div style={{
@@ -123,7 +97,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                     }
                 </CardInfoContainer>
             </CardContainer>
-            <DangerButton style={{ alignSelf: 'center' }} onClick={(event)=> handleDeleteContact(contact.id)}>Delete Contact</DangerButton>
+            <DangerButton style={{ alignSelf: 'center' }} onClick={(event) => handleDeleteContact(contact.id)}>Delete Contact</DangerButton>
         </>
     )
 }
